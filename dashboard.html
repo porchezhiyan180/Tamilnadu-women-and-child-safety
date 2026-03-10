@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Tamil Nadu Harassment Complaint Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Mukta+Malar:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/TamilNadu_Logo.svg/1200px-TamilNadu_Logo.svg.png"
+                    alt="Tamil Nadu Government Emblem" class="emblem"
+                    onerror="this.onerror=null; this.src='placeholder-logo.png';">
+                <div class="header-text">
+                    <h1>தமிழ்நாடு அரசு | Government of Tamil Nadu</h1>
+                    <h2>பயனர் முகப்பு | User Dashboard</h2>
+                </div>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
+                <a href="index.html" class="btn"
+                    style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px;">
+                    <i class="fas fa-plus"></i> புதிய புகார் | New Complaint
+                </a>
+                <!-- Logout Button -->
+                <button id="logoutBtn" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9rem;">
+                    <i class="fas fa-sign-out-alt"></i> வெளியேறு
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Welcome Section -->
+    <section class="dashboard-welcome">
+        <div class="container">
+            <h2>Welcome <span id="userNameDisplay">User</span></h2>
+            <p>Track your registered complaints and manage support services.</p>
+        </div>
+    </section>
+
+    <!-- Main Dashboard Content -->
+    <main class="dashboard-main">
+        <div class="container">
+            <div class="dashboard-grid">
+
+                <!-- Left Column: Complaint Tracking -->
+                <div class="dashboard-column tracking-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-search"></i> My Complaints (எனது புகார்கள்)</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="tracking-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ref ID (எண்)</th>
+                                            <th>Date (தேதி)</th>
+                                            <th>Location (இடம்)</th>
+                                            <th>Status (நிலை)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="complaintsTableBody">
+                                        <!-- Dynamically populated by auth.js/dashboard.js -->
+                                        <tr>
+                                            <td colspan="4" class="empty-state">Loading your complaints...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Counseling -->
+                <div class="dashboard-column counseling-section">
+                    <div class="section-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-hands-helping"></i> Trauma Recovery Counseling (ஆலோசனை)</h3>
+                            <p class="subtitle">Book a free, confidential session with Certified Govt. Doctors.</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="counselingForm" class="counseling-form">
+                                <div class="form-group">
+                                    <label for="doctorSelect">Select Available Specialist (மருத்துவர்)</label>
+                                    <select id="doctorSelect" required>
+                                        <option value="" disabled selected>Choose a Govt Certified Doctor...</option>
+                                        <option value="Dr. Anitha Menon (Clinical Psychologist)">Dr. Anitha Menon
+                                            (Clinical Psychologist, GH Chennai)</option>
+                                        <option value="Dr. Ramesh Kumar (Trauma Specialist)">Dr. Ramesh Kumar (Trauma
+                                            Specialist, Stanley)</option>
+                                        <option value="Dr. Lakshmi P (Counselor)">Dr. Lakshmi P (Senior Counselor,
+                                            NIMHANS trained)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-row" style="margin-bottom: 0;">
+                                    <div class="form-group">
+                                        <label for="appointmentDate">Preferred Date (தேதி)</label>
+                                        <input type="date" id="appointmentDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="appointmentTime">Time Slot (நேரம்)</label>
+                                        <select id="appointmentTime" required>
+                                            <option value="" disabled selected>Select Time</option>
+                                            <option value="10:00 AM">10:00 AM - 11:00 AM</option>
+                                            <option value="11:30 AM">11:30 AM - 12:30 PM</option>
+                                            <option value="02:00 PM">02:00 PM - 03:00 PM</option>
+                                            <option value="04:00 PM">04:00 PM - 05:00 PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="sessionMode">Session Mode (முறை)</label>
+                                    <div style="display: flex; gap: 15px; margin-top: 5px;">
+                                        <label><input type="radio" name="sessionMode" value="Online Video" checked>
+                                            Online Video Call</label>
+                                        <label><input type="radio" name="sessionMode" value="Audio Call"> Audio
+                                            Call</label>
+                                        <label><input type="radio" name="sessionMode" value="In-Person">
+                                            In-Person</label>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 15px;"
+                                    id="bookSessionBtn">
+                                    Book Appointment (பதிவு செய்)
+                                </button>
+                                <p id="bookingFeedback" class="feedback-msg hidden"></p>
+                            </form>
+
+                            <!-- Display upcoming appointments -->
+                            <div class="upcoming-appointments">
+                                <h4>Upcoming Sessions</h4>
+                                <ul id="appointmentsList" class="appointments-list">
+                                    <!-- Populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2024 Secure Reporting Portal. A conceptual design for Tamil Nadu.</p>
+        </div>
+    </footer>
+
+    <script src="chatbot.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Tamil Nadu Harassment Complaint Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Mukta+Malar:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="auth-page">
+
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/TamilNadu_Logo.svg/1200px-TamilNadu_Logo.svg.png"
+                    alt="Tamil Nadu Government Emblem" class="emblem"
+                    onerror="this.onerror=null; this.src='placeholder-logo.png';">
+                <div class="header-text">
+                    <h1>தமிழ்நாடு அரசு | Government of Tamil Nadu</h1>
+                    <h2>பாதுகாப்பான புகார் பலகை | Secure Harassment Portal</h2>
+                </div>
+            </div>
+            <div class="helpline-badge">
+                <i class="fas fa-phone-alt"></i> பெண்கள் உதவி எண்: <strong>181</strong>
+            </div>
+        </div>
+    </header>
+
+    <!-- Registration Area -->
+    <main class="auth-container">
+        <div class="auth-box auth-box-large">
+            <div class="auth-header">
+                <h3>Sign Up / பதிவு செய்க</h3>
+                <p>Create a secure account to quickly access reporting tools.</p>
+            </div>
+
+            <form id="signupForm" class="auth-form">
+                <!-- STEP 1: Personal Details -->
+                <div id="signupStep1">
+
+                    <div class="form-group">
+                        <label for="signupName">Full Name (முழு பெயர்) *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="signupName" name="signupName" required
+                                placeholder="Enter your full name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address (மின்னஞ்சல்) *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="signupEmail" name="signupEmail" required
+                                placeholder="Enter your email">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signupPassword">Password (கடவுச்சொல்) *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="signupPassword" name="signupPassword" required
+                                placeholder="Create a strong password" minlength="6">
+                        </div>
+                        <small class="help-text">Minimum 6 characters required.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password (கடவுச்சொல்லை உறுதிப்படுத்தவும்) *</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required
+                                placeholder="Re-enter your password">
+                        </div>
+                    </div>
+
+                    <div class="declaration" style="margin-top: 10px; margin-bottom: 20px;">
+                        <input type="checkbox" id="termsCheck" name="termsCheck" required>
+                        <label for="termsCheck">I agree to the Terms of Service and Privacy Policy. (விதிமுறைகளை
+                            ஏற்கிறேன்)
+                            *</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit" id="signupBtn">Request OTP (OTP பெறுக)</button>
+                </div> <!-- End Step 1 -->
+
+                <!-- STEP 2: OTP Verification (Initially Hidden) -->
+                <div id="signupStep2" class="hidden">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <i class="fas fa-envelope-open-text"
+                            style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 10px;"></i>
+                        <h4>Verify Email Address</h4>
+                        <p style="font-size: 0.9rem; color: var(--text-light);">We've sent a 4-digit OTP to your email
+                            address: <br><strong id="displayEmail"
+                                style="font-size: 1.1rem; color: var(--primary-color);"></strong></p>
+                    </div>
+
+                    <div class="form-group" style="text-align: center;">
+                        <label for="otpInput">Enter 4-Digit OTP (குறியீட்டு எண்)</label>
+                        <input type="text" id="otpInput" name="otpInput" placeholder="&#9679; &#9679; &#9679; &#9679;"
+                            maxlength="4"
+                            style="font-size: 2rem; letter-spacing: 15px; text-align: center; padding: 15px; margin-top: 10px; font-weight: bold; width: 60%; display: inline-block;">
+                    </div>
+
+                    <button type="button" class="btn btn-submit" id="verifyOtpBtn">Verify & Create Account (கணக்கை
+                        உருவாக்கு)</button>
+
+                    <div style="text-align: center; margin-top: 15px;">
+                        <a href="#" id="resendOtpBtn"
+                            style="color: var(--primary-color); font-size: 0.9rem; font-weight: 600;">Resend OTP</a>
+                    </div>
+                </div>
+
+                <p id="signupFeedback" class="feedback-msg hidden"></p>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html" class="auth-link">Login Here (உள்நுழைக)</a></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2024 Secure Reporting Portal. A conceptual design for Tamil Nadu.</p>
+            <p class="disclaimer">Note: This is a demonstration website.</p>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+</body>
+
+</html>

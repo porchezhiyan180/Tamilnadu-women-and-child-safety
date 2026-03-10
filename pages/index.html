@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamil Nadu Harassment Complaint Portal | பாதுகாப்பான புகார் பதிவு</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Mukta+Malar:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/TamilNadu_Logo.svg/1200px-TamilNadu_Logo.svg.png"
+                    alt="Tamil Nadu Government Emblem" class="emblem"
+                    onerror="this.onerror=null; this.src='placeholder-logo.png';">
+                <div class="header-text">
+                    <h1>தமிழ்நாடு அரசு | Government of Tamil Nadu</h1>
+                    <h2>பாதுகாப்பான புகார் பலகை | Secure Harassment Portal</h2>
+                </div>
+            </div>
+            <div class="header-actions"
+                style="display: flex; gap: 15px; align-items: center; justify-content: center; width: 100%;">
+
+                <a href="dashboard.html" class="btn"
+                    style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px;">
+                    <i class="fas fa-columns"></i> வலைத்தளம் | Dashboard
+                </a>
+                <div class="helpline-badge">
+                    <i class="fas fa-phone-alt"></i> பெண்கள் உதவி எண்: <strong>181</strong>
+                </div>
+                <!-- Logout Button -->
+                <button id="logoutBtn" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9rem;">
+                    <i class="fas fa-sign-out-alt"></i> வெளியேறு
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <h2>உங்கள் குரல் முக்கியமானது. அச்சமின்றி புகார் அளியுங்கள்.</h2>
+                <p>An official, secure, and confidential platform to report incidents of harassment. Your identity and
+                    safety are our utmost priority.</p>
+                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                    <a href="complaint.html" class="btn btn-primary"
+                        style="font-size: 1.1rem; padding: 15px 30px; box-shadow: 0 4px 15px rgba(232, 155, 16, 0.4);">
+                        <i class="fas fa-file-signature"></i> புகார் பதிவு செய் / Report Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Core Services Section -->
+    <section class="core-services" style="padding: 60px 0; background-color: var(--white);">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h3 style="color: var(--primary-color); font-size: 2rem; margin-bottom: 10px;">முக்கிய சேவைகள் | Core
+                    Services</h3>
+                <p style="color: var(--text-light); max-width: 600px; margin: 0 auto;">Access our primary support
+                    structures designed to assist and protect you securely.</p>
+            </div>
+
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <a href="complaint.html" class="service-card">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h4>Register Complaint</h4>
+                    <p class="tamil-title">புகார் பதிவு</p>
+                    <p class="desc">Submit a detailed incident report directly to the authorities. Options for anonymous
+                        submission available.</p>
+                    <span class="action-link">Proceed <i class="fas fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Service 2 -->
+                <a href="track.html" class="service-card">
+                    <div class="icon-wrapper" style="background: #e0f2fe; color: #0284c7;">
+                        <i class="fas fa-search-location"></i>
+                    </div>
+                    <h4>Track Status</h4>
+                    <p class="tamil-title">நிலையை அறி</p>
+                    <p class="desc">Enter your 10-digit tracking reference ID to view the real-time progress of your
+                        submitted case securely.</p>
+                    <span class="action-link" style="color: #0284c7;">Track <i class="fas fa-arrow-right"></i></span>
+                </a>
+
+                <!-- Service 3 -->
+                <a href="dashboard.html" class="service-card">
+                    <div class="icon-wrapper" style="background: #dcfce7; color: #166534;">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <h4>Counseling Support</h4>
+                    <p class="tamil-title">ஆலோசனை மையம்</p>
+                    <p class="desc">Book a confidential, free virtual session with government-certified trauma
+                        counselors and therapists.</p>
+                    <span class="action-link" style="color: #166534;">Book Session <i
+                            class="fas fa-arrow-right"></i></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Timeline -->
+    <section class="how-it-works"
+        style="padding: 60px 0; background-color: #f8fafc; border-top: 1px solid var(--border-color);">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h3 style="color: var(--text-color); font-size: 1.8rem; margin-bottom: 10px;">எப்படி செயல்படுகிறது? |
+                    How It Works</h3>
+                <p style="color: var(--text-light);">A simple, transparent process to ensure justice.</p>
+            </div>
+
+            <div class="timeline-container">
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-sign-in-alt"></i></div>
+                    <h5>1. Secure Login</h5>
+                    <p>Authenticate via email OTP to ensure data privacy.</p>
+                </div>
+                <div class="step-line"></div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                    <h5>2. File Report</h5>
+                    <p>Submit incident details and evidence securely.</p>
+                </div>
+                <div class="step-line"></div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-user-secret"></i></div>
+                    <h5>3. Investigation</h5>
+                    <p>Assigned to designated authorities for review.</p>
+                </div>
+                <div class="step-line"></div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-balance-scale"></i></div>
+                    <h5>4. Action</h5>
+                    <p>Appropriate legal/supportive action is initiated.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emergency Information Section -->
+    <section class="emergency-info">
+        <div class="container">
+            <h3>முக்கிய உதவி எண்கள் | Emergency Helplines</h3>
+            <div class="helpline-grid">
+                <div class="helpline-card">
+                    <i class="fas fa-female"></i>
+                    <h4>Women Helpline</h4>
+                    <p class="number">181</p>
+                </div>
+                <div class="helpline-card">
+                    <i class="fas fa-child"></i>
+                    <h4>Child Helpline</h4>
+                    <p class="number">1098</p>
+                </div>
+                <div class="helpline-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Police</h4>
+                    <p class="number">100 / 112</p>
+                </div>
+                <div class="helpline-card">
+                    <i class="fas fa-laptop-house"></i>
+                    <h4>Cyber Crime</h4>
+                    <p class="number">1930</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2024 Secure Reporting Portal. A conceptual design for Tamil Nadu.</p>
+            <p class="disclaimer">Note: This is a demonstration website and does not connect to actual databases yet.
+            </p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="chatbot.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

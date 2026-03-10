@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Complaint Status | Secure Harassment Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Mukta+Malar:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/TamilNadu_Logo.svg/1200px-TamilNadu_Logo.svg.png"
+                    alt="Tamil Nadu Government Emblem" class="emblem"
+                    onerror="this.onerror=null; this.src='placeholder-logo.png';">
+                <div class="header-text">
+                    <h1>தமிழ்நாடு அரசு | Government of Tamil Nadu</h1>
+                    <h2>பாதுகாப்பான புகார் பலகை | Secure Harassment Portal</h2>
+                </div>
+            </div>
+            <div class="header-actions"
+                style="display: flex; gap: 15px; align-items: center; justify-content: center; width: 100%;">
+                <a href="index.html" class="btn"
+                    style="background: transparent; border: 1px solid var(--text-color); color: var(--text-color); padding: 8px 15px;">
+                    <i class="fas fa-home"></i> முகப்பு | Home
+                </a>
+                <a href="dashboard.html" class="btn"
+                    style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px;">
+                    <i class="fas fa-columns"></i> வலைத்தளம் | Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content" style="min-height: 60vh; padding: 60px 20px;">
+        <div class="container">
+            <div class="track-box"
+                style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 8px; box-shadow: var(--shadow-lg); text-align: center; border-top: 5px solid var(--secondary-color);">
+                <h2 style="color: var(--primary-color); margin-bottom: 10px; font-size: 1.8rem;">
+                    <i class="fas fa-search-location"></i> Track Your Complaint
+                </h2>
+                <h3 style="color: var(--text-color); font-size: 1.2rem; margin-bottom: 20px;">புகார் நிலையை அறிய</h3>
+
+                <p style="color: var(--text-light); font-size: 0.95rem; margin-bottom: 30px;">
+                    Enter your 10-digit Reference ID (e.g., TN-123456) provided at the time of submission to check the
+                    current progress of your case.
+                </p>
+
+                <form id="publicTrackForm" style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="text" id="trackRefId" placeholder="TN-XXXXXX" required
+                        style="width: 100%; padding: 15px; border: 2px solid var(--border-color); border-radius: var(--border-radius); font-size: 1.1rem; text-align: center; text-transform: uppercase;">
+                    <button type="submit" class="btn btn-submit"
+                        style="width: 100%; margin-top: 10px; padding: 15px; font-size: 1.1rem;">
+                        <i class="fas fa-search"></i> Track Status
+                    </button>
+                </form>
+
+                <div id="trackResultArea" class="hidden"
+                    style="margin-top: 30px; padding: 25px; border-radius: 8px; background: #f8fafc; text-align: left; border: 1px solid #e2e8f0; box-shadow: var(--shadow-sm);">
+                    <!-- Results populated by script.js -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="main-footer"
+        style="background: var(--white); text-align: center; padding: 20px 0; border-top: 1px solid var(--border-color); margin-top: auto;">
+        <div class="container">
+            <p style="color: var(--text-light); font-size: 0.9rem;">&copy; 2024 Secure Reporting Portal. A conceptual
+                design for Tamil Nadu.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="auth.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

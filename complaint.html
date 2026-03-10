@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ta">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register a Complaint | தமிழ்நாடு அரசு</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Mukta+Malar:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/TamilNadu_Logo.svg/1200px-TamilNadu_Logo.svg.png"
+                    alt="Tamil Nadu Government Emblem" class="emblem"
+                    onerror="this.onerror=null; this.src='placeholder-logo.png';">
+                <div class="header-text">
+                    <h1>தமிழ்நாடு அரசு | Government of Tamil Nadu</h1>
+                    <h2>பாதுகாப்பான புகார் பலகை | Secure Harassment Portal</h2>
+                </div>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
+                <a href="index.html" class="btn"
+                    style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px;">
+                    <i class="fas fa-home"></i> முகப்பு | Home
+                </a>
+                <a href="dashboard.html" class="btn"
+                    style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px;">
+                    <i class="fas fa-columns"></i> வலைத்தளம் | Dashboard
+                </a>
+                <div class="helpline-badge">
+                    <i class="fas fa-phone-alt"></i> பெண்கள் உதவி எண்: <strong>181</strong>
+                </div>
+                <!-- Logout Button -->
+                <button id="logoutBtn" class="btn btn-primary" style="padding: 8px 15px; font-size: 0.9rem;">
+                    <i class="fas fa-sign-out-alt"></i> வெளியேறு
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div style="background-color: var(--primary-color); color: white; padding: 20px 0; text-align: center;">
+        <h2 style="font-family: var(--font-tamil), var(--font-heading);">அச்சமின்றி புகார் அளியுங்கள் | Report
+            Confidentially</h2>
+        <p style="opacity: 0.9; margin-top: 5px;">Your identity will be protected securely.</p>
+    </div>
+
+    <!-- Main Content & Form -->
+    <main id="complaint-form" class="main-content" style="background-color: var(--bg-color);">
+        <div class="container">
+            <div class="form-wrapper" style="margin-top: 20px;">
+                <div class="form-header">
+                    <h3>Incident Reporting Form</h3>
+                    <p class="subtitle">Please provide accurate details. Fields marked with * are mandatory.</p>
+                </div>
+
+                <form id="complaintForm" class="complaint-form" action="#" method="POST">
+                    <!-- Personal Details -->
+                    <fieldset>
+                        <legend>Personal Details (தனிப்பட்ட விவரங்கள்)</legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fullName">Full Name (முழு பெயர்) *</label>
+                                <input type="text" id="fullName" name="fullName" required
+                                    placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactNumber">Contact Number (தொடர்பு எண்) *</label>
+                                <input type="tel" id="contactNumber" name="contactNumber" required
+                                    placeholder="10-digit mobile number" pattern="[0-9]{10}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address (மின்னஞ்சல்) (Optional)</label>
+                            <input type="email" id="email" name="email" placeholder="Enter your email address">
+                        </div>
+                        <!-- Need Option to report anonymously -->
+                        <div class="form-check">
+                            <input type="checkbox" id="anonymous" name="anonymous">
+                            <label for="anonymous">I wish to keep my identity anonymous (எனது அடையாளத்தை ரகசியமாக வைக்க
+                                விரும்புகிறேன்)</label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Incident Details -->
+                    <fieldset>
+                        <legend>Incident Details (சம்பவ விவரங்கள்)</legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="incidentDate">Date of Incident (சம்பவம் நடந்த தேதி) *</label>
+                                <input type="date" id="incidentDate" name="incidentDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="incidentTime">Time of Incident (சம்பவம் நடந்த நேரம்)</label>
+                                <input type="time" id="incidentTime" name="incidentTime">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="district">District (மாவட்டம்) *</label>
+                            <select id="district" name="district" required>
+                                <option value="" disabled selected>Select District</option>
+                                <option value="chennai">Chennai</option>
+                                <option value="coimbatore">Coimbatore</option>
+                                <option value="madurai">Madurai</option>
+                                <option value="tiruchirappalli">Tiruchirappalli</option>
+                                <option value="salem">Salem</option>
+                                <option value="tirunelveli">Tirunelveli</option>
+                                <!-- More districts can be loaded dynamically -->
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="locationDetails">Exact Location Details (சரியான இடம்) *</label>
+                            <textarea id="locationDetails" name="locationDetails" rows="2" required
+                                placeholder="Street address, landmark, or specific location"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Detailed Description of the Incident (சம்பவத்தின் முழு விவரம்)
+                                *</label>
+                            <textarea id="description" name="description" rows="5" required
+                                placeholder="Please describe what happened in detail..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="evidence">Upload Evidence (ஆதாரங்கள்) (Videos/Audio/Photos/Documents) Max
+                                10MB</label>
+                            <input type="file" id="evidence" name="evidence"
+                                accept="image/*,video/*,audio/*,.pdf,.doc,.docx" multiple class="file-input">
+                        </div>
+                    </fieldset>
+
+                    <!-- Declaration -->
+                    <div class="declaration">
+                        <input type="checkbox" id="declarationCheck" name="declarationCheck" required>
+                        <label for="declarationCheck">I declare that the information provided is true to the best of my
+                            knowledge. (மேற்கண்ட தகவல்கள் அனைத்தும் உண்மையென உறுதியளிக்கிறேன்.) *</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit" id="submitBtn">Submit Complaint (புகாரை
+                        சமர்ப்பி)</button>
+                    <p id="formFeedback" class="feedback-msg hidden"></p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2026 Tamil Nadu Harassment Complaint Portal.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Use</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="chatbot.js"></script>
+    <script type="module" src="auth.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
