@@ -9,12 +9,14 @@ const bcrypt = require('bcryptjs');
 console.log('IMPORT: bcryptjs loaded');
 const jwt = require('jsonwebtoken');
 console.log('IMPORT: jsonwebtoken loaded');
-const db = require('./database');
+const supabase = require('./database');
 console.log('IMPORT: database loaded');
 const crypto = require('crypto');
 console.log('IMPORT: crypto loaded');
 const nodemailer = require('nodemailer');
 console.log('IMPORT: nodemailer loaded');
+const multer = require('multer');
+console.log('IMPORT: multer loaded');
 
 // ==========================================
 // EMAIL TRANSPORTER SETUP
@@ -36,6 +38,13 @@ function generateOtp() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+function generateTrackingId() {
+    return crypto.randomUUID().slice(0, 10).toUpperCase();
+}
+
+// Apply multer memory storage for file uploads
+const upload = multer({ storage: multer.memoryStorage() });
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-tn-portal';
@@ -43,11 +52,10 @@ console.log('CONFIG: PORT=' + PORT);
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Serve static frontend files (assuming they are in the same or 'public' directory)
-// For now, let's just serve the root directory where html files are
+// Serve static frontend files
 app.use(express.static(__dirname));
 
 // Utility: Authentication Middleware
@@ -63,7 +71,7 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-// Utility: Optional Authentication Middleware (for public routes that can also accept logged-in users)
+// Utility: Optional Authentication Middleware
 const optionalAuthenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -95,7 +103,7 @@ app.post('/api/auth/send-otp', async (req, res) => {
     }
 
     const otp = generateOtp();
-    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+    const expiresAt = Date.now() + 10 * 60 * 1000;
     otpStore.set(email, { otp, expiresAt, verified: false });
 
     try {
@@ -132,12 +140,11 @@ app.post('/api/auth/verify-otp', (req, res) => {
     }
     if (record.otp !== otp.trim()) return res.status(400).json({ error: 'Invalid OTP. Please try again.' });
 
-    // Mark as verified
     otpStore.set(email, { ...record, verified: true });
     res.json({ message: 'OTP verified successfully.' });
 });
 
-// 1. Register (OTP verified by backend email system)
+// 1. Register
 app.post('/api/auth/register', async (req, res) => {
     const { name, mobile, email, password } = req.body;
 
@@ -145,136 +152,215 @@ app.post('/api/auth/register', async (req, res) => {
         return res.status(400).json({ error: 'Name, email, and password are required.' });
     }
 
-    // Check OTP was verified for this email
     const otpRecord = otpStore.get(email);
     if (!otpRecord || !otpRecord.verified) {
         return res.status(400).json({ error: 'Email OTP not verified. Please verify your OTP first.' });
     }
 
-    // Check if email already exists
-    db.get('SELECT email FROM users WHERE email = ?', [email], async (err, row) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (row) return res.status(400).json({ error: 'This email address is already registered. Please log in.' });
+    try {
+        // Check if email already exists
+        const { data: existingUser, error: checkErr } = await supabase
+            .from('users')
+            .select('email')
+            .eq('email', email)
+            .single();
 
-        try {
-            const hashedPassword = await bcrypt.hash(password, 10);
+        if (existingUser) return res.status(400).json({ error: 'This email address is already registered. Please log in.' });
 
-            db.run('INSERT INTO users (name, mobile, email, password) VALUES (?, ?, ?, ?)', [name, mobile || null, email, hashedPassword], function (err) {
-                if (err) {
-                    // Fallback without mobile column
-                    db.run('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [name, email, hashedPassword], function (err2) {
-                        if (err2) return res.status(500).json({ error: 'Could not create account in database.' });
-                        otpStore.delete(email);
-                        res.status(201).json({ message: 'Account Created Successfully!' });
-                    });
-                    return;
-                }
-                otpStore.delete(email);
-                res.status(201).json({ message: 'Account Created Successfully!' });
-            });
-        } catch (error) {
-            console.error('Error generating request:', error);
-            res.status(500).json({ error: 'Server error generating request' });
-        }
-    });
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const { error: insertErr } = await supabase
+            .from('users')
+            .insert([{ name, mobile: mobile || null, email, password: hashedPassword }]);
+
+        if (insertErr) return res.status(500).json({ error: 'Could not create account in database.' });
+
+        otpStore.delete(email);
+        res.status(201).json({ message: 'Account Created Successfully!' });
+    } catch (error) {
+        console.error('Register error:', error);
+        res.status(500).json({ error: 'Server error during registration.' });
+    }
 });
 
-// 3. Login
-app.post('/api/auth/login', (req, res) => {
+// 2. Login
+app.post('/api/auth/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Email and password are required.' });
     }
 
-    db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (!user) return res.status(401).json({ error: 'Invalid credentials.' });
+    try {
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .single();
+
+        if (error || !user) return res.status(401).json({ error: 'Invalid credentials.' });
 
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) return res.status(401).json({ error: 'Invalid credentials.' });
 
-        const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '2h' });
+        const token = jwt.sign({ id: user.id, email: user.email, name: user.name, mobile: user.mobile }, JWT_SECRET, { expiresIn: '2h' });
 
         res.json({ message: 'Login successful', token, name: user.name, email: user.email });
-    });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ error: 'Server error during login.' });
+    }
 });
 
-// 4. Password Reset Modify (OTP verified by backend email system)
+// 3. Password Reset
 app.post('/api/auth/reset-password', async (req, res) => {
     const { email, newPassword } = req.body;
 
     if (!email || !newPassword) return res.status(400).json({ error: 'All fields required.' });
 
-    // Check OTP was verified for this email
     const otpRecord = otpStore.get(email);
     if (!otpRecord || !otpRecord.verified) {
         return res.status(400).json({ error: 'Email OTP not verified. Please verify your OTP first.' });
     }
 
-    // Try to find user by email column first, then fallback to mobile
-    db.get('SELECT * FROM users WHERE email = ? OR mobile = ?', [email, email], async (err, user) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (!user) return res.status(404).json({ error: 'No account found with this email address.' });
+    try {
+        const { data: user, error } = await supabase
+            .from('users')
+            .select('*')
+            .or(`email.eq.${email},mobile.eq.${email}`)
+            .single();
 
-        try {
-            const hashedPassword = await bcrypt.hash(newPassword, 10);
-            db.run('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, user.id], function (err) {
-                if (err) return res.status(500).json({ error: 'Error updating password.' });
-                otpStore.delete(email);
-                res.json({ message: 'Password updated successfully.' });
-            });
-        } catch (e) {
-            res.status(500).json({ error: 'Internal server error.' });
-        }
-    });
-});
+        if (error || !user) return res.status(404).json({ error: 'No account found with this email address.' });
 
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-// ==========================================
-// ROUTES: COMPLAINTS 
-// ==========================================
+        const { error: updateErr } = await supabase
+            .from('users')
+            .update({ password: hashedPassword })
+            .eq('id', user.id);
 
-// 1. Submit a generic complaint
-app.post('/api/complaints', optionalAuthenticateToken, (req, res) => {
-    // Note: This API accepts non-authenticated requests for anonymity if needed, but attaches mobile if user is authenticated
-    const { type, location, date, description } = req.body;
-    const user_mobile = req.user ? req.user.mobile : null;
-    const trackingId = crypto.randomUUID().slice(0, 10).toUpperCase();
+        if (updateErr) return res.status(500).json({ error: 'Error updating password.' });
 
-    // Verify fields
-    if (!type || !location || !date || !description) {
-        return res.status(400).json({ error: 'Missing required complaint fields.' });
+        otpStore.delete(email);
+        res.json({ message: 'Password updated successfully.' });
+    } catch (e) {
+        console.error('Reset password error:', e);
+        res.status(500).json({ error: 'Internal server error.' });
     }
+});
 
-    db.run(
-        'INSERT INTO complaints (tracking_id, user_mobile, type, location, date, description) VALUES (?, ?, ?, ?, ?, ?)',
-        [trackingId, user_mobile, type, location, date, description],
-        function (err) {
-            if (err) return res.status(500).json({ error: 'Failed to submit complaint.' });
-            res.status(201).json({ message: 'Complaint filed securely.', tracking_id: trackingId });
+
+// ==========================================
+// ROUTES: COMPLAINTS
+// ==========================================
+
+// Endpoint to submit a complaint (with evidence upload)
+app.post('/api/complaints', authenticateToken, upload.array('evidenceFiles', 5), async (req, res) => {
+    try {
+        const { type, location, date, description } = req.body;
+        // User mobile from authenticated token (from original req.user)
+        const user_mobile = req.user ? req.user.mobile : null;
+
+        // Generate tracking ID
+        let trackingId;
+        let isUnique = false;
+        while (!isUnique) {
+            trackingId = generateTrackingId();
+            const { data } = await supabase.from('complaints').select('tracking_id').eq('tracking_id', trackingId);
+            if (!data || data.length === 0) {
+                isUnique = true;
+            }
         }
-    );
+
+        let evidenceArr = [];
+
+        // Upload files to Supabase Storage
+        if (req.files && req.files.length > 0) {
+            for (const file of req.files) {
+                const fileExt = file.originalname.split('.').pop();
+                const fileName = `${trackingId}-${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('evidence')
+                    .upload(filePath, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: false
+                    });
+
+                if (uploadError) {
+                    console.error('Storage Upload Error:', uploadError);
+                    // continue with other files or fail? Let's just log and skip for robustness, or we can fail the whole request
+                } else {
+                    // Get public URL
+                    const { data: publicUrlData } = supabase.storage
+                        .from('evidence')
+                        .getPublicUrl(filePath);
+
+                    if (publicUrlData) {
+                        evidenceArr.push(publicUrlData.publicUrl);
+                    }
+                }
+            }
+        }
+
+        // Store as JSON array string, or null if none
+        const evidenceStr = evidenceArr.length > 0 ? JSON.stringify(evidenceArr) : null;
+
+        const { error } = await supabase
+            .from('complaints')
+            .insert([{ tracking_id: trackingId, user_mobile, type, location, date, description, evidence: evidenceStr }]);
+
+        if (error) {
+            console.error('SUPABASE INSERT ERROR:', error);
+            return res.status(500).json({ error: 'Failed to submit complaint. Database error.' });
+        }
+
+        res.status(201).json({ message: 'Complaint filed securely.', tracking_id: trackingId });
+    } catch (err) {
+        console.error('Complaint router error:', err);
+        res.status(500).json({ error: 'Server/Network error submitting complaint.' });
+    }
 });
 
-// 2. Track complaint by ID (Public Access)
-app.get('/api/complaints/:trackingId', (req, res) => {
+// 2. Track complaint by ID (Public)
+app.get('/api/complaints/:trackingId', async (req, res) => {
     const trackingId = req.params.trackingId.toUpperCase();
-    db.get('SELECT tracking_id, status, submitted_at FROM complaints WHERE tracking_id = ?', [trackingId], (err, row) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (!row) return res.status(404).json({ error: 'Tracking ID not found.' });
 
-        res.json(row);
-    });
+    try {
+        const { data, error } = await supabase
+            .from('complaints')
+            .select('tracking_id, status, submitted_at')
+            .eq('tracking_id', trackingId)
+            .single();
+
+        if (error || !data) return res.status(404).json({ error: 'Tracking ID not found.' });
+
+        res.json(data);
+    } catch (err) {
+        console.error('Track complaint error:', err);
+        res.status(500).json({ error: 'Database error.' });
+    }
 });
 
-// 3. User's specific complaints (Protected)
-app.get('/api/user/complaints', authenticateToken, (req, res) => {
+// 3. User's complaints (Protected)
+app.get('/api/user/complaints', authenticateToken, async (req, res) => {
     const mobile = req.user.mobile;
-    db.all('SELECT * FROM complaints WHERE user_mobile = ? ORDER BY submitted_at DESC', [mobile], (err, rows) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        res.json(rows);
-    });
+
+    try {
+        const { data, error } = await supabase
+            .from('complaints')
+            .select('*')
+            .eq('user_mobile', mobile)
+            .order('submitted_at', { ascending: false });
+
+        if (error) return res.status(500).json({ error: 'Database error.' });
+
+        res.json(data);
+    } catch (err) {
+        console.error('User complaints error:', err);
+        res.status(500).json({ error: 'Database error.' });
+    }
 });
 
 
@@ -283,7 +369,7 @@ app.get('/api/user/complaints', authenticateToken, (req, res) => {
 // ==========================================
 
 // 1. Book an appointment (Protected)
-app.post('/api/appointments', authenticateToken, (req, res) => {
+app.post('/api/appointments', authenticateToken, async (req, res) => {
     const { date, time, counselor } = req.body;
     const mobile = req.user.mobile;
 
@@ -291,23 +377,38 @@ app.post('/api/appointments', authenticateToken, (req, res) => {
         return res.status(400).json({ error: 'Date and time are required.' });
     }
 
-    db.run(
-        'INSERT INTO appointments (user_mobile, counselor, date, time) VALUES (?, ?, ?, ?)',
-        [mobile, counselor || 'Unassigned', date, time],
-        function (err) {
-            if (err) return res.status(500).json({ error: 'Failed to book appointment.' });
-            res.status(201).json({ message: 'Appointment Confirmed.', id: this.lastID });
-        }
-    );
+    try {
+        const { error } = await supabase
+            .from('appointments')
+            .insert([{ user_mobile: mobile, counselor: counselor || 'Unassigned', date, time }]);
+
+        if (error) return res.status(500).json({ error: 'Failed to book appointment.' });
+
+        res.status(201).json({ message: 'Appointment Confirmed.' });
+    } catch (err) {
+        console.error('Appointment error:', err);
+        res.status(500).json({ error: 'Server error booking appointment.' });
+    }
 });
 
 // 2. Fetch user's appointments (Protected)
-app.get('/api/user/appointments', authenticateToken, (req, res) => {
+app.get('/api/user/appointments', authenticateToken, async (req, res) => {
     const mobile = req.user.mobile;
-    db.all('SELECT * FROM appointments WHERE user_mobile = ? ORDER BY booked_at DESC', [mobile], (err, rows) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        res.json(rows);
-    });
+
+    try {
+        const { data, error } = await supabase
+            .from('appointments')
+            .select('*')
+            .eq('user_mobile', mobile)
+            .order('booked_at', { ascending: false });
+
+        if (error) return res.status(500).json({ error: 'Database error.' });
+
+        res.json(data);
+    } catch (err) {
+        console.error('User appointments error:', err);
+        res.status(500).json({ error: 'Database error.' });
+    }
 });
 
 

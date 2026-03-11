@@ -65,27 +65,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const date = document.getElementById('incidentDate').value;
             const districtElement = document.getElementById('district');
-            const locationText = districtElement.options[districtElement.selectedIndex].text;
-            const description = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.parentNode.textContent.trim()).join(', ') || 'General Complaint';
+            const locationText = districtElement.options[districtElement.selectedIndex]?.text || '';
+            const locationDetails = document.getElementById('locationDetails')?.value || '';
+            // For complaint type, grab checkboxes or use general
+            const type = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.parentNode.textContent.trim()).join(', ') || 'General Complaint';
+
+            // The main description text area
+            const descriptionInput = document.getElementById('description');
+            const description = descriptionInput ? descriptionInput.value : '';
+
+            // Handle Evidence & Form Data
+            const evidenceInput = document.getElementById('evidence');
+            const formData = new FormData();
+
+            formData.append('type', type);
+            formData.append('location', locationText + (locationDetails ? ', ' + locationDetails : ''));
+            formData.append('date', date);
+            formData.append('description', description);
+
+            if (evidenceInput && evidenceInput.files.length > 0) {
+                Array.from(evidenceInput.files).forEach(file => {
+                    formData.append('evidenceFiles', file); // Append actual files
+                });
+            }
 
             const currentName = sessionStorage.getItem('tn_portal_user_name');
             const token = sessionStorage.getItem('tn_portal_token');
 
-            const headers = { 'Content-Type': 'application/json' };
+            const headers = {};
             if (token) {
                 headers['Authorization'] = `Bearer ${token}`;
+                // Note: Do NOT set Content-Type header when using FormData; the browser sets it with the boundary boundary string automatically.
             }
 
             try {
                 const response = await fetch('http://localhost:3000/api/complaints', {
                     method: 'POST',
                     headers: headers,
-                    body: JSON.stringify({
-                        type: description,
-                        location: locationText,
-                        date: date,
-                        description: description
-                    })
+                    body: formData // Send the raw file data
                 });
 
                 const data = await response.json();
@@ -96,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!response.ok) {
                     feedbackMsg.classList.remove('hidden', 'success');
                     feedbackMsg.classList.add('error');
-                    feedbackMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed to submit complaint. Please try again.';
+                    feedbackMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed to submit complaint. ' + (data.error || 'Please try again.');
                     return;
                 }
 

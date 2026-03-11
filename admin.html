@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Image Viewer (Admin)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        .details {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .no-data {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 50px;
+            color: #777;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1><span style="color: #0369a1;">Database Image Viewer</span></h1>
+    <p style="text-align: center;">This page shows all complaints in the Supabase database that contain uploaded images.
+    </p>
+
+    <div id="loading" style="text-align: center; margin-top: 40px;">Fetching from Database...</div>
+    <div class="gallery" id="gallery"></div>
+
+    <script type="module">
+        import { createClient } from 'https://jspm.dev/@supabase/supabase-js';
+
+        // Connect straight to Supabase from the browser for this viewer
+        const SUPABASE_URL = 'https://uexrrvpavlmqjoapqcms.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_RzZC9YvR28LdbTXIrRkVAw_UOyU7jEe';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function fetchImages() {
+            document.getElementById('loading').style.display = 'block';
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+
+            try {
+                // Fetch all complaints
+                const { data, error } = await supabase
+                    .from('complaints')
+                    .select('*')
+                    .order('submitted_at', { ascending: false });
+
+                if (error) throw error;
+
+                document.getElementById('loading').style.display = 'none';
+
+                // Filter to only those that have valid JSON arrays starting with data:image (base64 pictures)
+                const imageComplaints = data.filter(c => {
+                    if (!c.evidence) return false;
+                    try {
+                        const parsed = JSON.parse(c.evidence);
+                        return parsed.length > 0 && parsed[0].startsWith('data:image');
+                    } catch (e) { return false; }
+                });
+
+                if (imageComplaints.length === 0) {
+                    gallery.innerHTML = '<div class="no-data">No complaints with images found in the database.</div>';
+                    return;
+                }
+
+                // Render cards
+                imageComplaints.forEach(c => {
+                    const parsed = JSON.parse(c.evidence);
+                    const imageSrc = parsed[0]; // grab the first image
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <span class="badge">Ref: ${c.tracking_id}</span>
+                        <img src="${imageSrc}" alt="Evidence Image" title="Click to open full size" onclick="window.open('${imageSrc}', '_blank')" />
+                        <div class="details">
+                            <p><strong>Date:</strong> ${new Date(c.submitted_at).toLocaleString()}</p>
+                            <p><strong>Location:</strong> ${c.location}</p>
+                            <p><strong>Description:</strong> ${c.description}</p>
+                        </div>
+                    `;
+                    gallery.appendChild(card);
+                });
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading').innerHTML = '<span style="color:red">Error connecting to database.</span>';
+            }
+        }
+
+        fetchImages();
+    </script>
+</body>
+
+</html>

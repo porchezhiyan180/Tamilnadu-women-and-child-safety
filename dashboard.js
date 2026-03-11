@@ -130,11 +130,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     statusObj = { text: 'Submitted', class: 'status-submitted' };
                 }
 
+                // Handle Evidence rendering
+                let evidenceHtml = '<span style="color: #94a3b8; font-size: 0.85rem;">None</span>';
+                if (c.evidence) {
+                    try {
+                        const files = JSON.parse(c.evidence);
+                        if (Array.isArray(files) && files.length > 0) {
+                            evidenceHtml = files.map(base64str => {
+                                // Check if it's an image
+                                if (base64str.startsWith('data:image')) {
+                                    return `<img src="${base64str}" alt="Evidence" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0; cursor: pointer; margin-right: 5px;" onclick="window.open('${base64str}', '_blank')">`;
+                                } else {
+                                    return `<span style="display:inline-block; background:#e2e8f0; padding:4px 8px; border-radius:4px; font-size:0.8rem; margin-right:5px;"><i class="fas fa-paperclip"></i> File</span>`;
+                                }
+                            }).join('');
+                        } else {
+                            evidenceHtml = `<span style="font-size: 0.85rem;">${c.evidence}</span>`; // old format fallback
+                        }
+                    } catch (e) {
+                        // Fallback if not JSON (e.g. old data or just a file name string)
+                        evidenceHtml = `<span style="font-size: 0.85rem; word-break: break-all;">${c.evidence}</span>`;
+                    }
+                }
+
                 tr.innerHTML = `
                     <td><strong>${c.tracking_id}</strong></td>
                     <td>${c.date}</td>
                     <td>${c.location}</td>
                     <td><span class="status-badge ${statusObj.class}">${statusObj.text}</span></td>
+                    <td>${evidenceHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
