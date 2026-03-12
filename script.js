@@ -230,31 +230,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Header Shrink on Scroll — throttled with requestAnimationFrame to prevent jank
-    const header = document.querySelector('.main-header');
-    if (header) {
-        let rafPending = false;
-
-        function updateHeader() {
-            const shouldMinimize = window.scrollY > 50;
-            const isMinimized = header.classList.contains('header-minimized');
-
-            // Only touch the DOM if the state actually changed
-            if (shouldMinimize && !isMinimized) {
-                header.classList.add('header-minimized');
-            } else if (!shouldMinimize && isMinimized) {
-                header.classList.remove('header-minimized');
-            }
-
-            rafPending = false;
-        }
-
-        window.addEventListener('scroll', () => {
-            if (!rafPending) {
-                rafPending = true;
-                requestAnimationFrame(updateHeader);
-            }
-        }, { passive: true });
-    }
-
 });

@@ -447,14 +447,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Header Shrink on Scroll
+
+    // Header Shrink on Scroll — throttled with requestAnimationFrame to prevent jank
     const header = document.querySelector('.main-header');
     if (header) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
+        // Automatically add top padding to body so the fixed header doesn't cover content
+        document.body.style.paddingTop = `${header.offsetHeight}px`;
+
+        let rafPending = false;
+
+        function updateHeader() {
+            const shouldMinimize = window.scrollY > 50;
+            const isMinimized = header.classList.contains('header-minimized');
+
+            // Only touch the DOM if the state actually changed
+            if (shouldMinimize && !isMinimized) {
                 header.classList.add('header-minimized');
-            } else {
+            } else if (!shouldMinimize && isMinimized) {
                 header.classList.remove('header-minimized');
+            }
+
+            rafPending = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!rafPending) {
+                rafPending = true;
+                requestAnimationFrame(updateHeader);
+            }
+        }, { passive: true });
+
+        // Maintain correct padding on resize
+        window.addEventListener('resize', () => {
+            if (window.scrollY <= 50) {
+                document.body.style.paddingTop = `${header.offsetHeight}px`;
             }
         });
     }

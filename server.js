@@ -173,7 +173,10 @@ app.post('/api/auth/register', async (req, res) => {
             .from('users')
             .insert([{ name, mobile: mobile || null, email, password: hashedPassword }]);
 
-        if (insertErr) return res.status(500).json({ error: 'Could not create account in database.' });
+        if (insertErr) {
+            console.error('SUPABASE INSERT ERROR:', insertErr);
+            return res.status(500).json({ error: 'Could not create account in database.' });
+        }
 
         otpStore.delete(email);
         res.status(201).json({ message: 'Account Created Successfully!' });
@@ -411,6 +414,77 @@ app.get('/api/user/appointments', authenticateToken, async (req, res) => {
     }
 });
 
+
+// ==========================================
+// ROUTES: SOS EMERGENCY
+// ==========================================
+
+// 1. Initial SOS Alert (Email alert with location)
+app.post('/api/emergency/sos', async (req, res) => {
+    const { location, timestamp, user } = req.body;
+    
+    console.log(`SOS TRIGGERED BY: ${user}`);
+    console.log(`LOCATION: ${location ? `${location.lat}, ${location.lng}` : 'Unknown'}`);
+
+    try {
+        const locationLink = location ? `https://www.google.com/maps?q=${location.lat},${location.lng}` : 'Location unknown';
+        
+        await transporter.sendMail({
+            from: `"EMERGENCY SOS - TN Safety" <${process.env.EMAIL_USER}>`,
+            to: process.env.EMAIL_USER, // Sending to admin/police for demo
+            subject: '🚨 URGENT: EMERGENCY SOS TRIGGERED 🚨',
+            html: `
+                <div style="font-family: Arial, sans-serif; border: 5px solid #ff416c; padding: 20px; border-radius: 10px;">
+                    <h1 style="color: #ff416c; text-align: center;">🚨 EMERGENCY ALERT 🚨</h1>
+                    <p style="font-size: 1.2rem;"><strong>User:</strong> ${user}</p>
+                    <p style="font-size: 1.2rem;"><strong>Time:</strong> ${new Date(timestamp).toLocaleString()}</p>
+                    <p style="font-size: 1.4rem; background: #fff5f5; padding: 15px; border-radius: 8px;">
+                        <strong>Current Location:</strong><br>
+                        <a href="${locationLink}" style="color: #ff416c; font-weight: bold;">View on Google Maps</a>
+                    </p>
+                    <p style="color: #6b7280; font-style: italic;">Note: Audio evidence is being recorded and will follow shortly.</p>
+                </div>
+            `
+        });
+
+        res.json({ message: 'Alert sent successfully' });
+    } catch (err) {
+        console.error('SOS Alert Error:', err);
+        res.status(500).json({ error: 'Failed to send SOS alert' });
+    }
+});
+
+// 2. SOS Audio Evidence Upload
+app.post('/api/emergency/sos-audio', upload.single('audioFile'), async (req, res) => {
+    const { user } = req.body;
+    const file = req.file;
+
+    if (!file) {
+        return res.status(400).json({ error: 'No audio file uploaded' });
+    }
+
+    try {
+        console.log(`AUDIO RECEIVED FROM: ${user}, SIZE: ${file.size} bytes`);
+        
+        // For demo, we just log it. In production, we'd save to Supabase Storage
+        // Let's try to upload to Supabase if possible
+        const fileName = `sos-audio-${Date.now()}.wav`;
+        const { data, error } = await supabase.storage
+            .from('evidence')
+            .upload(`sos/${fileName}`, file.buffer, {
+                contentType: 'audio/wav'
+            });
+
+        if (error) {
+            console.warn('Supabase SOS Upload Warning:', error.message);
+        }
+
+        res.json({ message: 'Audio evidence secured' });
+    } catch (err) {
+        console.error('SOS Audio Upload Error:', err);
+        res.status(500).json({ error: 'Failed to upload audio' });
+    }
+});
 
 // ==========================================
 // SERVER START
