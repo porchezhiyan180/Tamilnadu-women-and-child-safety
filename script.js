@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('http://localhost:3000/api/complaints', {
+                const response = await fetch('/api/complaints', {
                     method: 'POST',
                     headers: headers,
                     body: formData // Send the raw file data
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             trackResultArea.innerHTML = `<div style="text-align:center; color: var(--text-light);"><i class="fas fa-spinner fa-spin"></i> Searching database...</div>`;
 
             try {
-                const response = await fetch(`http://localhost:3000/api/complaints/${refId}`);
+                const response = await fetch(`/api/complaints/${refId}`);
 
                 if (!response.ok) {
                     // Complaint not found

@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             try {
-                const response = await fetch('http://localhost:3000/api/auth/send-otp', {
+                const response = await fetch('/api/auth/send-otp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 try {
                     // 1. Verify OTP
-                    const verifyResponse = await fetch('http://localhost:3000/api/auth/verify-otp', {
+                    const verifyResponse = await fetch('/api/auth/verify-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: pendingUser.email, otp: userOtp })
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     // 2. Register user
-                    const registerResponse = await fetch('http://localhost:3000/api/auth/register', {
+                    const registerResponse = await fetch('/api/auth/register', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const feedbackMsg = document.getElementById('signupFeedback');
 
                 try {
-                    const response = await fetch('http://localhost:3000/api/auth/send-otp', {
+                    const response = await fetch('/api/auth/send-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: pendingUser.email })
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             try {
-                const response = await fetch('http://localhost:3000/api/auth/login', {
+                const response = await fetch('/api/auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 requestEmailOtpBtn.disabled = true;
 
                 try {
-                    const response = await fetch('http://localhost:3000/api/auth/send-otp', {
+                    const response = await fetch('/api/auth/send-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: recoveryEmail })
@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 verifyEmailOtpBtn.disabled = true;
 
                 try {
-                    const response = await fetch('http://localhost:3000/api/auth/verify-otp', {
+                    const response = await fetch('/api/auth/verify-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: recoveryEmail, otp: enteredOtp })
@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!recoveryEmail) return;
 
                 try {
-                    const response = await fetch('http://localhost:3000/api/auth/send-otp', {
+                    const response = await fetch('/api/auth/send-otp', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: recoveryEmail })
@@ -419,7 +419,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveNewPasswordBtn.disabled = true;
 
                 try {
-                    const response = await fetch('http://localhost:3000/api/auth/reset-password', {
+                    const response = await fetch('/api/auth/reset-password', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: recoveryEmail, newPassword })

@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             try {
-                const response = await fetch('http://localhost:3000/api/appointments', {
+                const response = await fetch('/api/appointments', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:3000/api/user/complaints', {
+            const response = await fetch('/api/user/complaints', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:3000/api/user/appointments', {
+            const response = await fetch('/api/user/appointments', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
