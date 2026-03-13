@@ -24,7 +24,8 @@ console.log('IMPORT: multer loaded');
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // Port 587 uses STARTTLS which requires secure: false
+    secure: false,
+    family: 4, // Forces the use of IPv4 instead of IPv6
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
