@@ -1,0 +1,21 @@
+{
+  "name": "Tamil Nadu Women and Child Safety Portal",
+  "short_name": "TNSafety",
+  "description": "Secure Harassment Complaint Portal for Tamil Nadu Citizens",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#8B1A10",
+  "theme_color": "#8B1A10",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/TamilNadu_Logo.svg/192px-TamilNadu_Logo.svg.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/TamilNadu_Logo.svg/512px-TamilNadu_Logo.svg.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

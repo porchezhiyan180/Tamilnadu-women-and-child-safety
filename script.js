@@ -230,4 +230,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Handle Get Current Location (Phase 21)
+    const getLocationBtn = document.getElementById('getLocationBtn');
+    if (getLocationBtn) {
+        getLocationBtn.addEventListener('click', () => {
+            const originalText = getLocationBtn.innerHTML;
+            getLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+            getLocationBtn.disabled = true;
+
+            const locationInput = document.getElementById('locationDetails');
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    const timestamp = new Date().toLocaleString();
+                    const locationString = `Location Captured: Lat ${lat.toFixed(6)}, Lon ${lon.toFixed(6)} (at ${timestamp})`;
+                    
+                    if (locationInput) {
+                        locationInput.value = locationString;
+                        locationInput.focus();
+                    }
+                    
+                    getLocationBtn.innerHTML = '<i class="fas fa-check"></i> Location Captured';
+                    getLocationBtn.style.background = '#dcfce7';
+                    getLocationBtn.style.color = '#166534';
+                    getLocationBtn.style.borderColor = '#bbf7d0';
+                    
+                    setTimeout(() => {
+                        getLocationBtn.innerHTML = originalText;
+                        getLocationBtn.style.background = '';
+                        getLocationBtn.style.color = '';
+                        getLocationBtn.style.borderColor = '';
+                        getLocationBtn.disabled = false;
+                    }, 3000);
+                }, (error) => {
+                    console.error('Geolocation Error:', error);
+                    let errorMsg = 'Please enable location permissions.';
+                    if (error.code === error.TIMEOUT) errorMsg = 'Location request timed out.';
+                    alert(errorMsg);
+                    getLocationBtn.innerHTML = originalText;
+                    getLocationBtn.disabled = false;
+                }, { enableHighAccuracy: true, timeout: 5000 });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+                getLocationBtn.innerHTML = originalText;
+                getLocationBtn.disabled = false;
+            }
+        });
+    }
+
 });

@@ -177,7 +177,18 @@ a {
 
 /* Header actions row */
 .header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     transition: gap 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#publicActions, #privateActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 /* Helpline badge size transition */
@@ -297,7 +308,18 @@ a {
     color: #f0f0f0;
 }
 
-/* Form Section */
+.hero-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.btn-hero {
+    font-size: 1.1rem;
+    padding: 15px 30px;
+    box-shadow: 0 4px 15px rgba(232, 155, 16, 0.4);
+}
 .main-content {
     padding: 60px 0;
 }
@@ -1491,13 +1513,24 @@ legend {
     .header-actions {
         width: 100%;
         flex-direction: column;
-        gap: 12px !important;
+        gap: 10px !important;
     }
     
     #publicActions, #privateActions {
         width: 100%;
         flex-direction: column;
         gap: 8px !important;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        padding: 0 20px;
+    }
+
+    .btn-hero {
+        width: 100%;
+        font-size: 1rem;
+        padding: 12px 20px;
     }
 
     .btn {

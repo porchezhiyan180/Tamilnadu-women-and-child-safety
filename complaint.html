@@ -107,19 +107,54 @@
                             <label for="district">District (மாவட்டம்) *</label>
                             <select id="district" name="district" required>
                                 <option value="" disabled selected>Select District</option>
+                                <option value="ariyalur">Ariyalur</option>
+                                <option value="chengalpattu">Chengalpattu</option>
                                 <option value="chennai">Chennai</option>
                                 <option value="coimbatore">Coimbatore</option>
+                                <option value="cuddalore">Cuddalore</option>
+                                <option value="dharmapuri">Dharmapuri</option>
+                                <option value="dindigul">Dindigul</option>
+                                <option value="erode">Erode</option>
+                                <option value="kallakurichi">Kallakurichi</option>
+                                <option value="kanchipuram">Kanchipuram</option>
+                                <option value="kanyakumari">Kanyakumari</option>
+                                <option value="karur">Karur</option>
+                                <option value="krishnagiri">Krishnagiri</option>
                                 <option value="madurai">Madurai</option>
-                                <option value="tiruchirappalli">Tiruchirappalli</option>
+                                <option value="mayiladuthurai">Mayiladuthurai</option>
+                                <option value="nagapattinam">Nagapattinam</option>
+                                <option value="namakkal">Namakkal</option>
+                                <option value="nilgiris">Nilgiris</option>
+                                <option value="perambalur">Perambalur</option>
+                                <option value="pudukkottai">Pudukkottai</option>
+                                <option value="ramanathapuram">Ramanathapuram</option>
+                                <option value="ranipet">Ranipet</option>
                                 <option value="salem">Salem</option>
+                                <option value="sivaganga">Sivaganga</option>
+                                <option value="tenkasi">Tenkasi</option>
+                                <option value="thanjavur">Thanjavur</option>
+                                <option value="theni">Theni</option>
+                                <option value="thoothukudi">Thoothukudi</option>
+                                <option value="tiruchirappalli">Tiruchirappalli</option>
                                 <option value="tirunelveli">Tirunelveli</option>
-                                <!-- More districts can be loaded dynamically -->
-                                <option value="other">Other</option>
+                                <option value="tirupathur">Tirupathur</option>
+                                <option value="tiruppur">Tiruppur</option>
+                                <option value="tiruvallur">Tiruvallur</option>
+                                <option value="tiruvannamalai">Tiruvannamalai</option>
+                                <option value="tiruvarur">Tiruvarur</option>
+                                <option value="vellore">Vellore</option>
+                                <option value="viluppuram">Viluppuram</option>
+                                <option value="virudhunagar">Virudhunagar</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="locationDetails">Exact Location Details (சரியான இடம்) *</label>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <label for="locationDetails" style="margin-bottom: 0;">Exact Location Details (சரியான இடம்) *</label>
+                                <button type="button" id="getLocationBtn" class="btn" style="padding: 5px 10px; font-size: 0.8rem; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">
+                                    <i class="fas fa-map-marker-alt"></i> Get Current Location
+                                </button>
+                            </div>
                             <textarea id="locationDetails" name="locationDetails" rows="2" required
                                 placeholder="Street address, landmark, or specific location"></textarea>
                         </div>

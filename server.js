@@ -17,6 +17,8 @@ const nodemailer = require('nodemailer');
 console.log('IMPORT: nodemailer loaded');
 const multer = require('multer');
 console.log('IMPORT: multer loaded');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 // ==========================================
 // EMAIL TRANSPORTER SETUP
@@ -51,12 +53,39 @@ const upload = multer({ storage: multer.memoryStorage() });
 const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-tn-portal';
-console.log('CONFIG: PORT=' + PORT);
+// Basic Security Headers
+app.use(helmet({
+    contentSecurityPolicy: false, // Set to false if you are using many external CDNs/Scripts
+}));
 
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// CORS Configuration - Restrict to your domain in production
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://tamilnadusafetyportal.onrender.com'] 
+        : true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+};
+app.use(cors(corsOptions));
+
+// Global Rate Limiting - 100 requests per 15 mins
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: { error: 'Too many requests from this IP, please try again after 15 minutes.' }
+});
+app.use('/api/', globalLimiter);
+
+// Specific Rate Limiting for Auth/OTP (Prevent Spam)
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Increased for testing
+    message: { error: 'Too many login or OTP attempts. Please try again after 15 minutes.' }
+});
+app.use('/api/auth/', authLimiter);
+
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Serve static frontend files
 app.use(express.static(__dirname));

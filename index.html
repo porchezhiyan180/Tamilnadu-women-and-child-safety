@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tamil Nadu Harassment Complaint Portal | பாதுகாப்பான புகார் பதிவு</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8B1A10">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Mukta+Malar:wght@400;600;700&display=swap"
         rel="stylesheet">
@@ -26,11 +28,10 @@
                     <h2>பாதுகாப்பான புகார் பலகை | Secure Harassment Portal</h2>
                 </div>
             </div>
-            <div class="header-actions"
-                style="display: flex; gap: 15px; align-items: center; justify-content: center; width: 100%;">
+            <div class="header-actions">
 
                 <!-- Public Actions (Hidden when logged in) -->
-                <div id="publicActions" style="display: flex; gap: 10px;">
+                <div id="publicActions">
                     <a href="login.html" class="btn"
                         style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px; font-weight: bold;">
                         <i class="fas fa-sign-in-alt"></i> Login
@@ -41,7 +42,7 @@
                 </div>
 
                 <!-- Private Actions (Hidden when logged out) -->
-                <div id="privateActions" class="hidden" style="display: flex; gap: 10px; align-items: center;">
+                <div id="privateActions" class="hidden">
                     <a href="dashboard.html" class="btn"
                         style="background: transparent; border: 1px solid var(--primary-color); color: var(--primary-color); padding: 8px 15px; font-weight: bold;">
                         <i class="fas fa-user-circle"></i> Profile / Dashboard
@@ -66,9 +67,8 @@
                 <h2>உங்கள் குரல் முக்கியமானது. அச்சமின்றி புகார் அளியுங்கள்.</h2>
                 <p>An official, secure, and confidential platform to report incidents of harassment. Your identity and
                     safety are our utmost priority.</p>
-                <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
-                    <a href="complaint.html" class="btn btn-primary"
-                        style="font-size: 1.1rem; padding: 15px 30px; box-shadow: 0 4px 15px rgba(232, 155, 16, 0.4);">
+                <div class="hero-actions">
+                    <a href="complaint.html" class="btn btn-primary btn-hero">
                         <i class="fas fa-file-signature"></i> புகார் பதிவு செய் / Report Now
                     </a>
                 </div>
